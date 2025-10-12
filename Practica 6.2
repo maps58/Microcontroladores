@@ -1,0 +1,37 @@
+// Practica 6.2
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "driver/gpio.h"
+
+
+static const char *TAG = "ETX_PUSH_BUTTON";
+
+#define LED_GPIO_2 2
+#define SW_GPIO_25 25
+
+void app_main(void)
+{
+    /* Reset the pin */
+    gpio_reset_pin(LED_GPIO_2);
+    
+    /* Set the GPIOs to Output mode */
+    gpio_set_direction(LED_GPIO_2, GPIO_MODE_OUTPUT);
+    gpio_set_direction(SW_GPIO_25, GPIO_MODE_INPUT);
+
+    /* Enable Pullup for Input Pin */
+    gpio_pullup_en(SW_GPIO_25);
+    
+    while (1) 
+    {
+        if( gpio_get_level(SW_GPIO_25) == 0 )
+        {
+            /* Button is pressed. Turn on the LED */
+            gpio_set_level(LED_GPIO_2, 1);         
+        }
+        else
+        {
+            /* Button is released. Turn off the LED */
+            gpio_set_level(LED_GPIO_2, 0);
+        }
+    }
+}
