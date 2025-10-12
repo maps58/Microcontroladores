@@ -1,0 +1,64 @@
+#include <stdio.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "driver/gpio.h"
+#include "esp_log.h"
+#include "sdkconfig.h"
+#include <inttypes.h>
+
+#define LED_GPIO_2 2
+#define SW_GPIO_25 25
+
+bool gpio_value = false;
+
+static void IRAM_ATTR gpio_isr_handler(void* arg)
+{
+    /* 
+        Rutina de Debouncing
+    */
+   
+    // Desabilita Interrupcion 
+    gpio_intr_disable(SW_GPIO_25);
+    gpio_isr_handler_remove(SW_GPIO_25);
+
+    // Boton presionado, toglear el led
+    gpio_set_level(LED_GPIO_2, gpio_value);
+    gpio_value = !gpio_value;
+
+    // Rehabilitar la Interrupcion
+    gpio_isr_handler_add(SW_GPIO_25, gpio_isr_handler, NULL);
+    gpio_intr_enable(SW_GPIO_25);
+}
+
+void app_main(void)
+{
+    // Resetear los pines
+    gpio_reset_pin(LED_GPIO_2);
+    gpio_reset_pin(SW_GPIO_25);
+
+    // Ajustar la direccion de datos
+    gpio_set_direction(LED_GPIO_2, GPIO_MODE_OUTPUT);
+    gpio_set_direction(SW_GPIO_25, GPIO_MODE_INPUT);
+
+    // Habilitar resistencias Pullup para pin de entrada
+    gpio_pullup_en(SW_GPIO_25);
+
+    // Desabilitar pulldown para pin de entrada
+    gpio_pulldown_dis(SW_GPIO_25);
+
+    // configurar el borde de subida como generados de la interrupcion/
+    gpio_set_intr_type(SW_GPIO_25, GPIO_INTR_POSEDGE);
+
+    // Instalar servicio del ISR del gpio isr a valores por default
+    gpio_install_isr_service(0);
+
+    // Agregar el ISR a la interrupcion por GPIO.
+    gpio_isr_handler_add(SW_GPIO_25, gpio_isr_handler, NULL);
+
+    // Habilitar la interrupcion.
+    gpio_intr_enable(SW_GPIO_25);
+    
+    while (1) 
+    {
+        /* Loop infinito */
+    } }
