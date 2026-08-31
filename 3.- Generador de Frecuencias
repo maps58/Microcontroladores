@@ -1,0 +1,18 @@
+start:
+ 
+ ldi r17,0x01   
+ out PORTC,r17   ;estado alto
+ rcall delay_50us
+ ldi r17,0x00   
+ out PORTC,r17  ;estado bajo
+ rcall delay_50us
+ r-jmp start
+ {{
+  delay_50us:
+	ldi  r18, 2
+    ldi  r19, 6
+L1: dec  r19
+    brne L1
+    dec  r18
+    brne L1
+    ret
