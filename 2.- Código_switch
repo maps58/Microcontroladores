@@ -13,4 +13,4 @@ loop:
 
 in r17,PIND ; Mover los datos de entrada del PIND a un registro de trabajo
 out PORTC,r17 ; Se transfiere lo del registro de trabajo al PORTC. 
-rjmp
+rjmp loop ; El programa se pone en loop
