@@ -1,0 +1,33 @@
+;
+; MAPS_LAB0.asm
+;
+; Created: 8/24/2026 8:26:34 AM
+; Author : Ing. Solano
+;
+
+ldi r16,0x01
+out DDRC,r16    ; PORTC salida
+
+
+start:
+ 
+ ldi r17,0x01   
+ out PORTC,r17   ;enciende led
+ rcall delay_500ms
+ ldi r17,0x00   
+ out PORTC,r17  ;apaga led
+ rcall delay_500ms
+ rjmp start
+
+  delay_500ms:
+ldi  r18, 41
+ ldi  r16, 41
+    ldi  r17, 150
+    ldi  r18, 127
+L1: dec  r18
+    brne L1
+    dec  r17
+    brne L1
+    dec  r16
+    brne L1
+	ret
