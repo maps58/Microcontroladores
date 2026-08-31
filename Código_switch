@@ -1,0 +1,16 @@
+
+; Si el swith ingresa un 1, el led enciende y apaga con un 0.
+
+start:
+
+ldi r16,0XFF 
+out DDRC,r16 ;configura el PORTC como salida. 
+ldi r17,0x00 
+out DDRD,r17 ;configura PORTD como entrada. 
+out PORTD,r16 ; se activan las resistencDias de pull_up 
+
+loop:
+
+in r17,PIND ; Mover los datos de entrada del PIND a un registro de trabajo
+out PORTC,r17 ; Se transfiere lo del registro de trabajo al PORTC. 
+rjmp
